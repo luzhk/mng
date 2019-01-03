@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans  
+      http://www.springframework.org/schema/beans/spring-beans.xsd ">
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<!--
+  - Application context definition for "sample" DispatcherServlet.
+  -->
+   <!-- <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreUnresolvablePlaceholders" value="true" />
+        <property name="locations">
+            <list>
+                <value>classpath:properties/project.properties</value>
+            </list>
+        </property>
+        &lt;!&ndash; 设置编码格式 &ndash;&gt;
+        <property name="fileEncoding" value="UTF-8"></property>
+    </bean>-->
+
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="${db.jdbc.url}" />
+        <property name="username" value="${db.jdbc.username}" />
+        <property name="password" value="${db.jdbc.password}" />
+        <property name="maxActive" value="${db.jdbc.maxActive}" />
+        <property name="initialSize" value="${db.jdbc.initialSize}" />
+        <property name="removeAbandoned" value="true" />
+        <property name="removeAbandonedTimeout" value="${db.jdbc.removeAbandonedTimeout}" />
+        <property name="testOnBorrow" value="true" />
+        <property name="minIdle" value="${db.jdbc.minIdle}" />
+        <property name="maxWait" value="${db.jdbc.maxWait}" />
+        <property name="validationQuery" value="${db.jdbc.validationQuery}" />
+        <property name="connectionProperties" value="clientEncoding=UTF-8" />
+    </bean>
+
+    <!-- spring和MyBatis整合，不需要mybatis的配置映射文件 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="configLocation" value="classpath:spring/mybatis-config.xml"/>
+        <property name="mapperLocations" value="classpath*:com/platform/**/*Mapper.xml"/>
+    </bean>
+    
+    <!-- <bean id="mapper" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.platform.**.mapper"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+    </bean> -->
+
+    <!-- 单个dao层实现的配置方式 -->
+    <bean class="tk.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.platform.**.mapper"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <property name="properties">
+            <value>
+                mappers = com.platform.utils.basemapper.BaseReadMapper, com.platform.utils.basemapper.BaseWriteMapper
+            </value>
+        </property>
+    </bean>
+    
+    <!-- database operate reference -->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" p:dataSource-ref="dataSource" />
+
+    <!-- 对数据源进行事务管理,当前项目在前期还没有使用到给功能 -->
+    <!-- <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    
+    <tx:annotation-driven transaction-manager="transactionManager"/> -->
+    
+</beans>
