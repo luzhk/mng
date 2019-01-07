@@ -16,7 +16,7 @@
     <!-- Used by the SecurityManager to access security data (users, roles, etc).
          Many other realm implementations can be used too (PropertiesRealm,
          LdapRealm, etc. -->
-    <bean id="securityRealm" class="com.platform.universally.manager.auth.SecurityRealm">
+    <bean id="securityRealm" class="com.platform.universally.auth.SecurityRealm">
         <!-- <property name="credentialsMatcher">
             The 'bootstrapDataPopulator' Sha256 hashes the password
                  (using the username as the salt) then base64 encodes it:

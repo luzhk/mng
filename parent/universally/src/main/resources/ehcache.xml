@@ -90,7 +90,7 @@ even after a JVM restart.  -->
            diskPersistent="true"
            diskExpiryThreadIntervalSeconds="600"/>
            
-    <cache name="com.platform.universally.manager.auth.SecurityRealm.authorizationCache"
+    <cache name="com.platform.universally.auth.SecurityRealm.authorizationCache"
            maxElementsInMemory="10000"
            eternal="false"
            timeToLiveSeconds="600"

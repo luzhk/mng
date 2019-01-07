@@ -1,6 +1,5 @@
-package com.platform.universally.manager.auth;
+package com.platform.universally.auth.author;
 
-import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 
 /**

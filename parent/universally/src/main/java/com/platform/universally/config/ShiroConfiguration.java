@@ -1,13 +1,9 @@
 package com.platform.universally.config;
 
-import com.platform.universally.manager.auth.JwtFilter;
-import com.platform.universally.manager.auth.SecurityRealm;
-import org.apache.shiro.authz.Authorizer;
-import org.apache.shiro.authz.ModularRealmAuthorizer;
+import com.platform.universally.auth.author.JwtFilter;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
@@ -18,9 +14,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.Filter;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * shiro配置

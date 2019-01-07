@@ -1,4 +1,4 @@
-package com.platform.universally.manager.auth;
+package com.platform.universally.auth;
 
 //import java.io.Serializable;
 import java.util.List;

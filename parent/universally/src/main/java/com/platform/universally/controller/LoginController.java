@@ -2,8 +2,8 @@ package com.platform.universally.controller;
 
 import javax.annotation.Resource;
 
-import com.platform.universally.manager.auth.JWTToken;
-import com.platform.universally.config.jwt.JWTUtil;
+import com.platform.universally.auth.author.JWTToken;
+import com.platform.universally.auth.jwt.JWTUtil;
 import com.platform.universally.manager.response.JsonResult;
 import com.platform.universally.manager.response.ResCode;
 import org.apache.shiro.SecurityUtils;

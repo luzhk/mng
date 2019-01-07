@@ -1,4 +1,4 @@
-package com.platform.universally.manager.auth;
+package com.platform.universally.auth.author;
 
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 //import org.springframework.http.HttpStatus;
