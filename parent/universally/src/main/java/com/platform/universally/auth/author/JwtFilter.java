@@ -1,5 +1,6 @@
 package com.platform.universally.auth.author;
 
+import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 //import org.springframework.http.HttpStatus;
 //import org.springframework.web.bind.annotation.RequestMethod;·
@@ -25,9 +26,13 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean isLoginAttempt(ServletRequest request, ServletResponse response) {
-        HttpServletRequest req = (HttpServletRequest) request;
+       /* HttpServletRequest req = (HttpServletRequest) request;
         String authorization = req.getHeader(LOGIN_SIGN);
-        return authorization != null;
+        return authorization == null;*/
+
+        Subject subject = getSubject(request, response);
+        //调用的应该是securityRealm中的doGetAuthenticationInfo方法
+        return subject.isAuthenticated();
     }
 
 
@@ -43,8 +48,17 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
     }
 
 
+    /**
+     * 在pre
+     * @param request
+     * @param response
+     * @param mappedValue
+     * @return
+     */
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        // 判断是否已经完成登录，这种方式错误，
+        // 不能只是根据当前是否有对应的token就接受是否已经完成登录
         if (isLoginAttempt(request, response)) {
             try {
                 executeLogin(request, response);

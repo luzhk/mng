@@ -56,6 +56,14 @@ public class ShiroConfiguration {
     }
 
     //Filter工厂，设置对应的过滤条件和跳转条件
+    /**
+     * 原理：当前的所有请求都通过过滤器，然后不同的过滤器负责不同的功能
+     * shiroFilter过滤器的功能
+     * 1、在登录时调用了SecurityRealm中的doGetAuthenticationInfo认证管理方法
+     * 2、在进行资源访问时调用了SecurityRealm中的doGetAuthorizationInfo授权管理方法
+     * @param securityManager
+     * @return
+     */
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();

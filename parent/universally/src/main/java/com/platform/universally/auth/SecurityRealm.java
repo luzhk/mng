@@ -1,6 +1,7 @@
 package com.platform.universally.auth;
 
 //import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +14,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 //import org.apache.shiro.crypto.hash.Sha256Hash;
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.realm.AuthorizingRealm;
 //import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -52,12 +54,10 @@ public class SecurityRealm extends AuthorizingRealm {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
 	/**
 	 * 认证管理
 	 * 验证当前用户的信息是否符合要求，用户名和密码
 	 * 认证的方式：token认证，密码认证，验证码认证...
-	 *
 	 */
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
@@ -80,7 +80,8 @@ public class SecurityRealm extends AuthorizingRealm {
 		if (sysUser == null) {
 			throw new AuthenticationException("Wrong username or password");
 		} else {
-			if (!password.equals(sysUser.getPassword())) {
+			String encryptedPassword = new Sha256Hash(password, ByteSource.Util.bytes(username)).toBase64();
+			if (!encryptedPassword.equals(sysUser.getPassword())) {
 				throw new AuthenticationException("Wrong username or password");
 			} else if (!StatusConsts.STATUS_NORMAL.equals(sysUser.getStatus())) {
 				throw new AuthenticationException("User status is disabled");
@@ -101,9 +102,14 @@ public class SecurityRealm extends AuthorizingRealm {
 		/** 添加角色 */
 		try {
 			List<String> roleCodeList = sysRoleService.listRoleCodesByUserCode(username);
-			for (String roleCode : roleCodeList) {
-				authorizationInfo.addRole(roleCode);
+			if (null == roleCodeList || roleCodeList.size() == 0) {
+				logger.error("用户：{},没有对应的角色信息", username);
+				return authorizationInfo;
 			}
+			authorizationInfo.setRoles(new HashSet<>(roleCodeList));
+			/*for (String roleCode : roleCodeList) {
+				authorizationInfo.addRole(roleCode);
+			}*/
 		} catch (Exception e) {
 			logger.error("listRoleCodeByManagerUsername error, username:"+ username, e);
 			return authorizationInfo;
