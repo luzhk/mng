@@ -25,7 +25,8 @@
 		<spring.version>4.3.9.RELEASE</spring.version>
 		<mybatis.version>3.4.1</mybatis.version>
 		<mybatis.tk>3.4.4</mybatis.tk>
-		<spring.tk.mybatis>2.1.2</spring.tk.mybatis>
+		<!--<spring.tk.mybatis>2.1.2</spring.tk.mybatis>-->
+		<spring.tk.mybatis>2.1.4</spring.tk.mybatis>
 		<shiro.version>1.3.2</shiro.version>
 		<persistence.version>1.0</persistence.version>
 		<common.version>3.6</common.version>
