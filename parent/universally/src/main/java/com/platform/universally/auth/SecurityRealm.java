@@ -4,6 +4,8 @@ package com.platform.universally.auth;
 import java.util.HashSet;
 import java.util.List;
 
+import com.platform.universally.auth.author.JWTToken;
+import com.platform.universally.auth.jwt.JWTUtil;
 import org.apache.commons.lang3.StringUtils;
 //import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -62,7 +64,7 @@ public class SecurityRealm extends AuthorizingRealm {
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
 		//该值来源于SubjectUtils.getSubject.login(token);
-		UsernamePasswordToken upToken = (UsernamePasswordToken) token;
+        JWTToken upToken = (JWTToken) token;
 		String username = upToken.getUsername();
 
 		if (StringUtils.isEmpty(username)) {
@@ -71,23 +73,23 @@ public class SecurityRealm extends AuthorizingRealm {
 		if (null == token.getCredentials()) {
 			throw new AuthenticationException("Password cannot be empty");
 		}
-		String password = new String(upToken.getPassword());
-		if (StringUtils.isEmpty(password)) {
-			throw new AuthenticationException("Password cannot be empty");
-		}
 		// 通过数据库进行验证
 		SysUser sysUser = sysUserService.getSysUserByUserName(username);
-		if (sysUser == null) {
+		if (sysUser == null && !JWTUtil.verify(upToken.getToken(), username)) {
 			throw new AuthenticationException("Wrong username or password");
 		} else {
+            String password = new String(upToken.getPassword());
+            if (StringUtils.isEmpty(password)) {
+                throw new AuthenticationException("Password cannot be empty");
+            }
 			String encryptedPassword = new Sha256Hash(password, ByteSource.Util.bytes(username)).toBase64();
 			if (!encryptedPassword.equals(sysUser.getPassword())) {
 				throw new AuthenticationException("Wrong username or password");
 			} else if (!StatusConsts.STATUS_NORMAL.equals(sysUser.getStatus())) {
 				throw new AuthenticationException("User status is disabled");
 			}
-		}
-		return new SimpleAuthenticationInfo(password, ByteSource.Util.bytes(username), getName());
+            return new SimpleAuthenticationInfo(ByteSource.Util.bytes(username), password, getName());
+        }
 	}
 
 	/**
@@ -97,7 +99,7 @@ public class SecurityRealm extends AuthorizingRealm {
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
 		SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-		UsernamePasswordToken principal = (UsernamePasswordToken) principals.getPrimaryPrincipal();
+        JWTToken principal = (JWTToken) principals.getPrimaryPrincipal();
 		String username = principal.getUsername();
 		/** 添加角色 */
 		try {

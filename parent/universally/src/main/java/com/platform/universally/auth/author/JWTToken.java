@@ -21,15 +21,11 @@ public class JWTToken extends UsernamePasswordToken {
         this.token = token;
     }
 
-
-    @Override
-    public Object getPrincipal() {
+    public String getToken() {
         return token;
     }
 
-    @Override
-    public Object getCredentials() {
-        return token;
+    public void setToken(String token) {
+        this.token = token;
     }
-
 }

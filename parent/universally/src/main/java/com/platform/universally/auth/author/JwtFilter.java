@@ -1,5 +1,6 @@
 package com.platform.universally.auth.author;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 //import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
     private static String LOGIN_SIGN = "token";
 
     /**
+     * 尝试登录
      * 判断对应的token是否为空，如果为空则直接返回登录失败
      * @param request
      * @param response
@@ -26,13 +28,13 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean isLoginAttempt(ServletRequest request, ServletResponse response) {
-       /* HttpServletRequest req = (HttpServletRequest) request;
-        String authorization = req.getHeader(LOGIN_SIGN);
-        return authorization == null;*/
+        HttpServletRequest req = (HttpServletRequest) request;
+        String authorization = req.getHeader(LOGIN_SIGN);//获取当前的token
+        return StringUtils.isNoneBlank(authorization);//当有token是，尝试登录
+//        Subject subject = getSubject(request, response);
 
-        Subject subject = getSubject(request, response);
         //调用的应该是securityRealm中的doGetAuthenticationInfo方法
-        return subject.isAuthenticated();
+//        return !subject.isAuthenticated();//在用户身份校验完成之后才会更新当前的状态
     }
 
 
@@ -43,7 +45,11 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
         JWTToken token = new JWTToken(header);
         //判断当前的token是否为用户登录后从后台返回的数据
         //jwt生成的token中包含了用户名和密码在用户登录时也将对应的用户名和密码使用jwt封装为token这样就可以完成登录验证了
-        getSubject(request, response).login(token);
+        Subject subject = getSubject(request, response);
+        Object obj = subject.getPrincipal();//从当前的subject中获取对应的用户名及密码
+        String userName = (String) obj;
+        token.setUsername(userName);
+        subject.login(token);
         return true;
     }
 

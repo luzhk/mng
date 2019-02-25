@@ -16,22 +16,20 @@ public class JWTUtil {
 
     private final static String JWT_SIGN = "65ythj3ewds7yuhj3ewdsiukjmws";
 
-    public static String sign(String userName, String passord){
+    public static String sign(String userName){
         long expire_time = System.currentTimeMillis() + EXPIRE_TIME;
         Algorithm algorithm = Algorithm.HMAC256(JWT_SIGN.getBytes());
         return JWT.create()
                 .withClaim("userName", userName)
-                .withClaim("passowrd", passord)
                 .withExpiresAt(new Date(expire_time))
                 .sign(algorithm);
     }
 
 
-    public static boolean verify(String token, String userName, String password) {
+    public static boolean verify(String token, String userName) {
         Algorithm algorithm = Algorithm.HMAC256(JWT_SIGN.getBytes());
         JWTVerifier verifier = JWT.require(algorithm)
-                .withClaim("userName", userName)
-                .withClaim("password", password).build();
+                .withClaim("userName", userName).build();
         verifier.verify(token);
         return true;
     }

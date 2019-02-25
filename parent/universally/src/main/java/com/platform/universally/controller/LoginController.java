@@ -48,7 +48,7 @@ public class LoginController {
 	public JsonResult login(@RequestBody LoginCommand loginCommand){
 //        String encryptedPassword = new Sha256Hash(loginCommand.getPassword(), ByteSource.Util.bytes(loginCommand.getUsername())).toBase64();
 //		UsernamePasswordToken token = new UsernamePasswordToken(loginCommand.getUsername(), encryptedPassword, loginCommand.getRememberMe());
-		String jwtToken = JWTUtil.sign(loginCommand.getUsername(), loginCommand.getPassword());
+		String jwtToken = JWTUtil.sign(loginCommand.getUsername());
 		JWTToken token = new JWTToken(jwtToken, loginCommand.getUsername(), loginCommand.getPassword());
         try {
             SecurityUtils.getSubject().login(token);
