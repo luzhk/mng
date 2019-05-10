@@ -75,21 +75,7 @@
 				%-20(%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]) %-5level %logger{80}[%L] - %msg%n
           ]]></pattern>
         </encoder>
-    </appender> -->
-
-    <!-- <logger name="com.eigpay.acct.infra.dao"  level="DEBUG" additivity="false">
-        <appender-ref ref="STDERR"/>
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="daoRFile"/>
-        <appender-ref ref="allErrorRFile"/>
-    </logger> -->
-
-    <!-- <logger name="com.eigpay.acct.core" level="DEBUG" additivity="false">
-        <appender-ref ref="STDERR"/>
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="serviceRFile"/>
-        <appender-ref ref="allErrorRFile"/>
-    </logger> -->
+    </append>
 
     <!-- <logger name="org.mybatis" level="DEBUG" additivity="false">
         <appender-ref ref="STDERR"/>
